@@ -585,7 +585,7 @@ impl SPIInner {
         if (self.spi_rxne_enable()) {
             dr5 = self.registers.SPI_DR5.get();
         }
-     dr5
+        dr5
     }
 
     pub fn bitEXtracted(&mut self, number: u32, k: u32, p: u32) -> u32 {
