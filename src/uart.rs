@@ -1,3 +1,10 @@
+
+
+/// UART
+/// UART module provides a two-wire asynchronous serial non-return-to-zero (NRZ)
+/// communication with RS-232 (RS-422/485) interface. Each UART module has transmit and
+/// receive buffers that can hold upto 16 entries. Data transfer rate can be modified by providing
+/// appropriate value to UARTBAUD register.
 use crate::common::MMIODerefWrapper;
 use riscv::{
     asm::{delay, nop},
@@ -70,28 +77,28 @@ register_bitfields! {
         /// - If the FIFO is enabled, the TXFE bit is set when the transmit FIFO is empty.
         /// - This bit does not indicate if there is data in the transmit shift register.
         BREAK_ERROR OFFSET(7) NUMBITS(1) [],
-        //Break Error (Sets when the data and stop are both zero
+        ///Break Error (Sets when the data and stop are both zero
         FRAME_ERROR OFFSET(6) NUMBITS(1) [],
-        //Frame Error (Sets when the stopis zero)
+        ///Frame Error (Sets when the stopis zero)
         OVERRUN OFFSET(5) NUMBITS(1) [],
-        //Overrun Error (A data overrun error occurred in the receive
-        //shift register. This happens when additional data arrives
-        //while the FIFO is full. )
+        ///Overrun Error (A data overrun error occurred in the receive
+        ///shift register. This happens when additional data arrives
+        ///while the FIFO is full. )
         PARITY_ERROR OFFSET(4) NUMBITS(1) [],
-        //Parity Error (Sets when The receive character does not
-        //have correct parity information and is suspect.
+        ///Parity Error (Sets when The receive character does not
+        ///have correct parity information and is suspect.
 
         STS_RX_FULL OFFSET(3) NUMBITS(1) [],
-        //Receiver Full (Sets when the Receive Buffer is Full)
+        ///Receiver Full (Sets when the Receive Buffer is Full)
 
         STS_RX_NOT_FULL OFFSET(2) NUMBITS(1) [],
-        // Receiver Not Empty (Sets when there is some data in the
-        //Receive Buffer).
+        /// Receiver Not Empty (Sets when there is some data in the
+        ///Receive Buffer).
         STS_TX_FULL OFFSET(1) NUMBITS(1) [
             EMPTY = 0,
             FULL = 1,
         ],
-        //Transmitter Full (Sets when the transmit Buffer is full)
+        ///Transmitter Full (Sets when the transmit Buffer is full)
         STS_TX_EMPTY OFFSET(0) NUMBITS(1) [
             EMPTY = 1,
             FULL = 0,
@@ -151,16 +158,18 @@ register_bitfields! {
         ENABLE_BREAK_ERROR OFFSET(7) NUMBITS(1) [],
         ENABLE_RX_THRESHOLD OFFSET(8) NUMBITS(1) []
     ],
-
+///Delayed Transmit control is done by providing the required delay in UART DELAY register.
       DELAY [
         COUNT OFFSET(0) NUMBITS(8) []
       ],
-
+///UART IQCYCLES Register holds the number of input qualification cycles for the receiver pin. .
       IQCYCLES[
         COUNT OFFSET(0) NUMBITS(8) []
       ],
     RX_THRESHOLD [
-        ///  The fractional baud rate divisor.
+        /// UART RX_THRESHOLD register holds the receiver FIFO threshold value, when the RX FIFO
+        ///level increases beyond the threshold, corresponding status bit will be set and when interrupt is
+       ///enabled, interrupt will be raised
         FIFO_RX OFFSET(0) NUMBITS(8) []
     ]
 

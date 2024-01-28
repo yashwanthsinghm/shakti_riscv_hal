@@ -1,3 +1,8 @@
+/*
+SPI is a synchronous serial I/O port that allows a serial bit stream of programmed length to be
+shifted into and out of the device at programmable bit transfer rate
+*/
+
 use riscv::asm::delay;
 use tock_registers::{
     fields::FieldValue,
@@ -17,133 +22,133 @@ pub const SPI_OFFSET: usize = 0x0002_0000;
 
     SPI_CR1 [
 
-        // Expected Total Number of bits to be received.
+        /// Expected Total Number of bits to be received.
         SPI_TOTAL_BITS_RX OFFSET(24) NUMBITS(8) [
 
         ],
 
-        // Total Number of bits to be transmitted.
+        /// Total Number of bits to be transmitted.
         SPI_TOTAL_BITS_TX OFFSET(16) NUMBITS(8) [
 
         ],
 
-        // Bidirectional data mode enable. This bit enables
-        // half-duplex communication using a common single
-        // bidirectional data line.
-        // 0: 2-line unidirectional data mode selected
-        // 1: 1-line unidirectional data mode selected
+        /// Bidirectional data mode enable. This bit enables
+        /// half-duplex communication using a common single
+        /// bidirectional data line.
+        /// 0: 2-line unidirectional data mode selected
+        /// 1: 1-line unidirectional data mode selected
         SPI_BIDIMODE OFFSET(15) NUMBITS(1) [
             OUTPUT_ENABLE = 1,
             PUTPUT_DISABLE = 0,
         ],
 
-        // Output enable in bidirectional mode This bit combined with
-        // the BIDI-MODE bit selects the direction of transfer in bi-direction mode.
-        // 0: receive-only mode (Output Disabled)
-        // 1: transmit-only mode (Output Enabled)
+        /// Output enable in bidirectional mode This bit combined with
+        /// the BIDI-MODE bit selects the direction of transfer in bi-direction mode.
+        /// 0: receive-only mode (Output Disabled)
+        /// 1: transmit-only mode (Output Enabled)
         SPI_BIDIODE OFFSET(14) NUMBITS(1) [
             OUTPUT_ENABLE = 1,
             PUTPUT_DISABLE = 0,
         ],
 
 
-        // Hardware CRC calculation Enable.
-        // 0: CRC calculation disable
-        // 1: CRC calculation enable
+        /// Hardware CRC calculation Enable.
+        /// 0: CRC calculation disable
+        /// 1: CRC calculation enable
         SPI_CRCEN OFFSET(13) NUMBITS(1) [
             HWCRC_ENABLE = 1,
             HWCRC_DISABLE = 0,
         ],
 
-        // Transmit CRC Next.
-        // 0: Next Transmit value is from Tx buffer
-        // 1: Next Transmit value is from Rx buffer
+        /// Transmit CRC Next.
+        /// 0: Next Transmit value is from Tx buffer
+        /// 1: Next Transmit value is from Rx buffer
         SPI_CCRCNEXT OFFSET(12) NUMBITS(1) [
             CRCNEXT_RX = 1,
             CRCNEXT_TX = 0,
         ],
 
-        // CRC Length bit is set and cleared by software to select CRC Length
+        /// CRC Length bit is set and cleared by software to select CRC Length
         SPI_CRCL OFFSET(11) NUMBITS(1) [
 
         ],
 
-        // Receive only mode enabled. This bit enables simplex
-        // communication using a single unidirectional line to
-        // receive data exclusively. Keep BIDIMODE bit clear when
-        // receiving the only mode is active.
+        /// Receive only mode enabled. This bit enables simplex
+        /// communication using a single unidirectional line to
+        /// receive data exclusively. Keep BIDIMODE bit clear when
+        /// receiving the only mode is active.
         SPI_RXONLY OFFSET(10) NUMBITS(1) [
 
         ],
 
-        // Software Slave Management. When the SSM bit is set,
-        // the NSS pin input is replaced with the value from the SSI
-        // bit.
-        // 0: Software slave management disabled
-        // 1: Software slave management enabled
+        /// Software Slave Management. When the SSM bit is set,
+        /// the NSS pin input is replaced with the value from the SSI
+        /// bit.
+        /// 0: Software slave management disabled
+        /// 1: Software slave management enabled
         SPI_SSM OFFSET(9) NUMBITS(1) [
             SSM_ENABLED  = 1,
             SSM_DISABLED = 0,
         ],
 
-        // Internal Slave Select.This bit has an effect only when the
-        // SSM bit is set. The value of this bit is forced onto the
-        // NSS pin and the I/O value of the NSS pin is ignored
+        /// Internal Slave Select.This bit has an effect only when the
+        /// SSM bit is set. The value of this bit is forced onto the
+        /// NSS pin and the I/O value of the NSS pin is ignored
         SPI_SSI OFFSET(8) NUMBITS(1) [
 
         ],
 
-        // Frame Format
-        // 0: data is transmitted/received with the MSB first
-        // 1: data is transmitted/received with the LSB first
-        // Note: This bit should not be changed when communication is ongoing
+        /// Frame Format
+        /// 0: data is transmitted/received with the MSB first
+        /// 1: data is transmitted/received with the LSB first
+        /// Note: This bit should not be changed when communication is ongoing
         SPI_LSBFIRST OFFSET(7) NUMBITS(1) [
             LSB_FIRST = 1,
             MSB_FIRST = 0,
         ],
 
-        // SPI Enable
-        // 0: SPI is disabled
-        // 1: SPI is enabled
+        /// SPI Enable
+        /// 0: SPI is disabled
+        /// 1: SPI is enabled
         SPI_SPE OFFSET(6) NUMBITS(1) [
             ENABLED  = 1,
             DISABLED = 0,
         ],
 
-        // Baud Rate Control
-        // 000: fCLK/2
-        // 001: fCLK/4
-        // 010: fCLK/8
-        // 011: fCLK/16
-        // 100: fCLK/32
-        // 101: fCLK/64
-        // 110: fCLK/128
-        // 111: fCLK/256
-        // Note:This bit should not be changed when communication is ongoing
+        /// Baud Rate Control
+        /// 000: fCLK/2
+        /// 001: fCLK/4
+        /// 010: fCLK/8
+        /// 011: fCLK/16
+        /// 100: fCLK/32
+        /// 101: fCLK/64
+        /// 110: fCLK/128
+        /// 111: fCLK/256
+        /// Note:This bit should not be changed when communication is ongoing
         SPI_BR OFFSET(3) NUMBITS(3) [
 
         ],
 
-        // Master Selection
-        // 0: Slave Configuration
-        // 1: Master Configuration
-        // Note This bit should not be changed when communication is ongoing
+        /// Master Selection
+        /// 0: Slave Configuration
+        /// 1: Master Configuration
+        /// Note This bit should not be changed when communication is ongoing
         SPI_MSTR OFFSET(2) NUMBITS(1) [
             SLAVE_CONFIG   = 1,
             MASTER_CONFIG  = 0,
         ],
 
-        //Clock Polarity
-        //0: CLK is 0 when idle
-        //1: CLK is 1 when idle
+        ///Clock Polarity
+        ///0: CLK is 0 when idle
+        ///1: CLK is 1 when idle
         SPI_CPOL OFFSET(1) NUMBITS(1) [
             ONE_IDLE   = 1,
             ZERO_IDLE  = 0,
         ],
 
-        //Clock Phase
-        //0: The first clock transition is the first data capture edge
-        //1: The second clock transition is the first data capture edge
+        ///Clock Phase
+        ///0: The first clock transition is the first data capture edge
+        ///1: The second clock transition is the first data capture edge
         SPI_CPHA OFFSET(0) NUMBITS(1) [
             SECOND_CLK = 1,
             FIRST_CLK  = 0,
@@ -151,63 +156,63 @@ pub const SPI_OFFSET: usize = 0x0002_0000;
     ],
 
     SPI_CR2 [
-        //SPI_TOTAL_BITS_RX OFFSET(24) NUMBITS(7) [],
+        ///SPI_TOTAL_BITS_RX OFFSET(24) NUMBITS(7) [],
         SPI_RX_IMM_START OFFSET(16) NUMBITS(1) [],
         SPI_RX_START OFFSET(15) NUMBITS(1) [],
         SPI_LDMA_TX_START OFFSET(14) NUMBITS(1) [],
         SPI_LDMA_RX OFFSET(13) NUMBITS(1) [],
 
-        // FIFO reception threshold is used to set the threshold of
-        // the RXFIFO that triggers an RXNE event.
-        // 0: RXNE event is generated if the FIFO level is greater
-        // than or equal to 1/2 (16-bit)
-        // 1: RXNE event is generated if the FIFO level is greater
-        // than or equal to 1/4 (8-bit)
+        /// FIFO reception threshold is used to set the threshold of
+        /// the RXFIFO that triggers an RXNE event.
+        /// 0: RXNE event is generated if the FIFO level is greater
+        /// than or equal to 1/2 (16-bit)
+        /// 1: RXNE event is generated if the FIFO level is greater
+        /// than or equal to 1/4 (8-bit)
         SPI_FRXTH OFFSET(12) NUMBITS(1) [],
 
-        // Reserved bits
-        // SPI_DS OFFSET(8) NUMBITS(4) [],
+        /// Reserved bits
+        /// SPI_DS OFFSET(8) NUMBITS(4) [],
 
-        // Interrupt enable for TXE event.
-        // 0: TXE interrupt masked
-        // 1: TXE interrupt is not interrupt masked
+        /// Interrupt enable for TXE event.
+        /// 0: TXE interrupt masked
+        /// 1: TXE interrupt is not interrupt masked
         SPI_TXEIE OFFSET(7) NUMBITS(1) [],
 
-        // Interrupt enable for RXNE event
-        // 0: RXNE interrupt masked
-        // 1: RXNE interrupt is not interrupt masked
+        /// Interrupt enable for RXNE event
+        /// 0: RXNE interrupt masked
+        /// 1: RXNE interrupt is not interrupt masked
         SPI_RXNEIE OFFSET(6) NUMBITS(1) [
             RXNE_UNMASKED = 1,
             RXNE_MASKED = 0,
         ],
 
-        // when an error condition occurs.
-        // 0: Error interrupt masked
-        // 1: Error interrupt not masked.
+        /// when an error condition occurs.
+        /// 0: Error interrupt masked
+        /// 1: Error interrupt not masked.
         //Frame Error (Sets when the stopis zero)
         SPI_ERRIE OFFSET(5) NUMBITS(1) [
             MASKED_INT   = 1,
             UNMASKED_INT = 0,
         ],
 
-        // Reserved bits
-        // SPI_FRF OFFSET(4) NUMBITS(1) [],
-        // SPI_NSSP OFFSET(3) NUMBITS(1) [],
+        /// Reserved bits
+        /// SPI_FRF OFFSET(4) NUMBITS(1) [],
+        /// SPI_NSSP OFFSET(3) NUMBITS(1) [],
 
-        // SS output enable
-        // 0: SS output is disabled in master mode and the SPI interface
-        // can work in a multi-master configuration
-        // 1: SS output is enabled in master mode and when the SPI
-        // interface is enabled. The SPI interface cannot work in a
-        // multi-master environment.
+        /// SS output enable
+        /// 0: SS output is disabled in master mode and the SPI interface
+        /// can work in a multi-master configuration
+        /// 1: SS output is enabled in master mode and when the SPI
+        /// interface is enabled. The SPI interface cannot work in a
+        /// multi-master environment.
         SPI_SSOE OFFSET(2) NUMBITS(1) [
             SSOE_ENABLED  = 1,
             SSOE_DISABLED = 0,
         ],
 
-        // Reserved bits
-        // SPI_TXDMAEN OFFSET(1) NUMBITS(1) [],
-        // SPI_RXDMAEN OFFSET(0) NUMBITS(1) [],
+        /// Reserved bits
+        /// SPI_TXDMAEN OFFSET(1) NUMBITS(1) [],
+        /// SPI_RXDMAEN OFFSET(0) NUMBITS(1) [],
 
     ],
 

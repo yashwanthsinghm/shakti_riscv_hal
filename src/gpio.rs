@@ -43,6 +43,18 @@ pub struct GPIOInner {
     registers: Registers,
 }
 
+
+///Sequence of execution:
+///1. Write into the GPIO Direction register to configure GPIO pin as an input or output.
+///2. Write appropriate values to the GPIO DATA register.
+
+/// The General Purpose Input/output operation can be used to generate custom
+///waveforms, enable signals, generate interrupts, etc. The GPIO has a GPIO DIRECTION register
+///which configures the GPIO pin as an input or output and the GPIO DATA register which holds
+///the input data to GPIO or output data from GPIO. The GPIO pins 0 - 7 can accept External
+///events as interrupts. To use a GPIO pin (0 - 7) as interrupt, that particular GPIO pin(s) should be
+///configured as input. The GPIO data register is 1 byte, 2 byte and 4 byte accessible.
+
 impl GPIOInner {
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
