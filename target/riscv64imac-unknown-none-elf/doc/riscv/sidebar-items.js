@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["singleton"],"mod":["asm","delay","interrupt","register"]};

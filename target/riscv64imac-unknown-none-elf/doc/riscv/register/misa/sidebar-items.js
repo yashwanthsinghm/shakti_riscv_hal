@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["MXL"],"fn":["read"],"struct":["Misa"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["clear_uext","clear_usoft","clear_utimer","read","set_uext","set_usoft","set_utimer"],"struct":["Uie"]};

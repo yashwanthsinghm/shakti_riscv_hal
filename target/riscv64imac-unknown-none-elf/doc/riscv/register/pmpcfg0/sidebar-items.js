@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["clear_pmp","read","set_pmp","write"]};
