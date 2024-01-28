@@ -52,3 +52,20 @@ Vajra - 256
     ],
 
 }
+
+
+type Registers = MMIODerefWrapper<RegistersBlock>;
+
+pub struct CNINTInner {
+    registers: Registers,
+}
+
+impl CNINTInner {
+    pub const unsafe fn new(mmio_start_addr: usize) -> Self {
+        unsafe {
+            Self {
+                registers: Registers::new(mmio_start_addr),
+            }
+        }
+    }
+}

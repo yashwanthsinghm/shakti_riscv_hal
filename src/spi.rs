@@ -12,7 +12,7 @@ use self::SPI_CR1::SPI_TOTAL_BITS_TX;
 
 pub const SPI_OFFSET: usize = 0x0002_0000;
 
-register_bitfields! {
+ register_bitfields! {
     u32,
 
     SPI_CR1 [
@@ -253,7 +253,7 @@ register_bitfields! {
 
 }
 
-register_structs! {
+ register_structs! {
     #[allow(non_snake_case)]
     pub RegisterBlock{
         (0x00 => SPI_CR1: ReadWrite<u32, SPI_CR1::Register>),

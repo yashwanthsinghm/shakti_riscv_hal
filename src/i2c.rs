@@ -13,7 +13,7 @@ use tock_registers::{
 // Private Definitions
 //--------------------------------------------------------------------------------------------------
 
-pub const I2C_OFFSET: usize = 0x0004_0000   ;
+pub const I2C_OFFSET: usize = 0x0004_0000;
 
 pub const I2C_INI: u8 = 1 << 7;
 pub const I2C_STS: u8 = 1 << 5;
@@ -22,7 +22,6 @@ pub const I2C_AD0_LRB: u8 = 1 << 3;
 pub const I2C_AAS: u8 = 1 << 2;
 pub const I2C_LAB: u8 = 1 << 1;
 pub const I2C_BB: u8 = 1 << 0;
-
 
 pub const I2C_PIN: u8 = 1 << 7;
 pub const I2C_ES0: u8 = 1 << 6;
@@ -37,16 +36,16 @@ register_structs! {
         (0x00 => PRESCALE: ReadWrite<u16>),
         (0x02 => _reserved0),
         (0x08 => CONTROL: ReadWrite<u8>),
-        (0x0C => _reserved0),
+        (0x09 => _reserved1),
         (0x10 => DATA: ReadWrite<u8>),
-        (0x12 => _reserved0),
+        (0x11 => _reserved2),
         (0x18 => STATUS : ReadWrite<u8>),
-        (0x1C => _reserved0),
+        (0x19 => _reserved3),
         (0x38 => SCL : ReadWrite<u8>),
-        (0x3C => @END),
+        (0x39 => _reserved4)
+,       (0x3C => @END),
     }
 }
-
 
 register_bitfields! {
     u32,
@@ -64,9 +63,9 @@ register_bitfields! {
         I2C_STS OFFSET(5) NUMBITS(1) [],
 
         I2C_BER OFFSET(4) NUMBITS(1) [],
- 
+
         I2C_AD0_LRB OFFSET(3) NUMBITS(1) [],
-    
+
         I2C_AAS OFFSET(2) NUMBITS(1) [],
 
         I2C_LAB OFFSET(1) NUMBITS(1) [],
@@ -96,6 +95,22 @@ register_bitfields! {
     ]
 
 ],
-  
 
+
+}
+
+type Registers = MMIODerefWrapper<RegistersBlock>;
+
+pub struct I2CInner {
+    registers: Registers,
+}
+
+impl I2CInner {
+    pub const unsafe fn new(mmio_start_addr: usize) -> Self {
+        unsafe {
+            Self {
+                registers: Registers::new(mmio_start_addr),
+            }
+        }
+    }
 }

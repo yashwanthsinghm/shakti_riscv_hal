@@ -29,11 +29,12 @@ register_structs! {
         (0x00 => PERIOD_REGISTOR: ReadWrite<u16>),
         (0x02 => _reserved0),
         (0x04 => DUTY_REGISTER: ReadWrite<u16>),
-        (0x06 => _reserved0),
+        (0x06 => _reserved1),
         (0x08 => CONTROL_REGISTER: ReadWrite<u8>),
-        (0x10 => _reserved0),
-        (0x0C =>CLOCK_REGISTER : ReadWrite<u16>),
-        (0x0E => @END),
+        (0x09 => _reserved2),
+        (0x0C => CLOCK_REGISTER : ReadWrite<u16>),
+        (0x0E => _reserved3),
+        (0x1C => @END),
     }
 }
 
@@ -88,4 +89,21 @@ register_bitfields! {
     ],
 
 
+}
+
+
+type Registers = MMIODerefWrapper<RegistersBlock>;
+
+pub struct PWMInner {
+    registers: Registers,
+}
+
+impl PWMInner {
+    pub const unsafe fn new(mmio_start_addr: usize) -> Self {
+        unsafe {
+            Self {
+                registers: Registers::new(mmio_start_addr),
+            }
+        }
+    }
 }
