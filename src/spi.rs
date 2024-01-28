@@ -210,9 +210,9 @@ pub const SPI_OFFSET: usize = 0x0002_0000;
             SSOE_DISABLED = 0,
         ],
 
-        /// Reserved bits
-        /// SPI_TXDMAEN OFFSET(1) NUMBITS(1) [],
-        /// SPI_RXDMAEN OFFSET(0) NUMBITS(1) [],
+        // Reserved bits
+        // SPI_TXDMAEN OFFSET(1) NUMBITS(1) [],
+        // SPI_RXDMAEN OFFSET(0) NUMBITS(1) [],
 
     ],
 
@@ -587,7 +587,7 @@ impl SPIInner {
                 + SPI_CR1::SPI_TOTAL_BITS_TX.val(8),
         );
 
-        if (self.spi_rxne_enable()) {
+        if self.spi_rxne_enable() {
             dr5 = self.registers.SPI_DR5.get();
         }
         dr5
