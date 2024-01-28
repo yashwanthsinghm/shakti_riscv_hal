@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["I2C_AAS","I2C_ACK","I2C_AD0_LRB","I2C_BB","I2C_BER","I2C_ENI_LRB","I2C_ES0","I2C_INI","I2C_LAB","I2C_OFFSET","I2C_PIN","I2C_STA","I2C_STO","I2C_STS"],"struct":["I2CInner","RegistersBlock"]};

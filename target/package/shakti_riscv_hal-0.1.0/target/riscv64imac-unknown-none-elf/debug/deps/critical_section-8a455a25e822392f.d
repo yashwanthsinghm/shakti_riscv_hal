@@ -1,0 +1,9 @@
+/Users/yashwanthsingh/Documents/Yash/Projects/shakti/shakti_riscv_hal/target/package/shakti_riscv_hal-0.1.0/target/riscv64imac-unknown-none-elf/debug/deps/libcritical_section-8a455a25e822392f.rmeta: /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/lib.rs /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/mutex.rs /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/../README.md
+
+/Users/yashwanthsingh/Documents/Yash/Projects/shakti/shakti_riscv_hal/target/package/shakti_riscv_hal-0.1.0/target/riscv64imac-unknown-none-elf/debug/deps/libcritical_section-8a455a25e822392f.rlib: /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/lib.rs /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/mutex.rs /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/../README.md
+
+/Users/yashwanthsingh/Documents/Yash/Projects/shakti/shakti_riscv_hal/target/package/shakti_riscv_hal-0.1.0/target/riscv64imac-unknown-none-elf/debug/deps/critical_section-8a455a25e822392f.d: /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/lib.rs /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/mutex.rs /Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/../README.md
+
+/Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/lib.rs:
+/Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/mutex.rs:
+/Users/yashwanthsingh/.cargo/registry/src/index.crates.io-6f17d22bba15001f/critical-section-1.1.2/src/../README.md:
