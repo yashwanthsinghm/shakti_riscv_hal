@@ -1,3 +1,7 @@
+//! I2C two-wire interface
+
+
+
 ///I2C is a serial protocol for a two-wire interface to connect low-speed devices like
 ///microcontrollers, EEPROMs, A/D and D/A converters, I/O interfaces and other similar
 ///peripherals in embedded systems. Multiple slave devices can be connected to a single master
