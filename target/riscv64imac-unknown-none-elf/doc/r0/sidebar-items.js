@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["init_data","zero_bss"],"trait":["Word"]};

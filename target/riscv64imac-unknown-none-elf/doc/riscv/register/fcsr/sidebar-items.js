@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Flag","RoundingMode"],"fn":["clear_flag","clear_flags","read","set_rounding_mode"],"struct":["FCSR","Flags"]};

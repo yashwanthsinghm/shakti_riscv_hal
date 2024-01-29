@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["clear_uie","read","set_uie","set_upie"],"struct":["Ustatus"]};

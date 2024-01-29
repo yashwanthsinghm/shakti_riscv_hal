@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["I2C_OFFSET"],"struct":["GPIOInner","RegistersBlock"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["SPI_OFFSET"],"struct":["RegisterBlock","SPIInner"]};

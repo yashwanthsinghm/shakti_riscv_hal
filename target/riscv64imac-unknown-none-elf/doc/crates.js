@@ -1,1 +1,0 @@
-window.ALL_CRATES = ["bit_field","critical_section","embedded_hal","panic_halt","r0","riscv","riscv_rt","shakti_riscv_hal","tock_registers","vcell","void","volatile_register"];
