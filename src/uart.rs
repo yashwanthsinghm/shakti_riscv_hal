@@ -1,5 +1,5 @@
 
-
+//! asynchronous serial communication
 /// UART
 /// UART module provides a two-wire asynchronous serial non-return-to-zero (NRZ)
 /// communication with RS-232 (RS-422/485) interface. Each UART module has transmit and

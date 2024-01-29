@@ -1,3 +1,4 @@
+//! SPI serial communication
 /*
 SPI is a synchronous serial I/O port that allows a serial bit stream of programmed length to be
 shifted into and out of the device at programmable bit transfer rate

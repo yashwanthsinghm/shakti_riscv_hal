@@ -1,3 +1,4 @@
+//! General purpose input and output
 use crate::common::MMIODerefWrapper;
 use riscv::{
     asm::{delay, nop},

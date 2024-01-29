@@ -1,3 +1,4 @@
+//! Pulse Width Modulators (PWM) are used to generate pulses with variable duty cycle
 /**
  * Pulse Width Modulators (PWM) are used to generate pulses with variable duty cycle.
 The duty cycle and the period of the pulse can be varied through DUTY and PERIOD registers

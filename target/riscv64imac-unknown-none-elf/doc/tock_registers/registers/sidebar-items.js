@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Aliased","InMemoryRegister","ReadOnly","ReadWrite","WriteOnly"]};

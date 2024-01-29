@@ -1,3 +1,4 @@
+//! external spi flash
 use crate::spi::{self, SPIInner};
 
 pub struct Flash {

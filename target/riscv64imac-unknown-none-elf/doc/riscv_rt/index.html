@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Minimal startup / runtime for RISC-V CPU’s"><title>riscv_rt - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-e883e87179a81222.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="riscv_rt" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (de686cbc6 2023-12-14)" data-channel="nightly" data-search-js="search-874d56868bf05518.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../static.files/storage-bc37acceda91d44a.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../riscv_rt/index.html">riscv_rt</a><span class="version">0.11.0</span></h2></div><div class="sidebar-elems"><ul class="block">
+            <li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#reexports">Re-exports</a></li><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li><li><a href="#attributes">Attribute Macros</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">riscv_rt</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/riscv_rt/lib.rs.html#1-597">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Minimal startup / runtime for RISC-V CPU’s</p>
+<h2 id="minimum-supported-rust-version-msrv"><a href="#minimum-supported-rust-version-msrv">Minimum Supported Rust Version (MSRV)</a></h2>
+<p>This crate is guaranteed to compile on stable Rust 1.59 and up. It <em>might</em>
+compile with older versions but that may change in any new patch release.</p>
+<h2 id="features"><a href="#features">Features</a></h2>
+<p>This crate provides</p>
+<ul>
+<li>
+<p>Before main initialization of the <code>.bss</code> and <code>.data</code> sections.</p>
+</li>
+<li>
+<p><code>#[entry]</code> to declare the entry point of the program</p>
+</li>
+<li>
+<p><code>#[pre_init]</code> to run code <em>before</em> <code>static</code> variables are initialized</p>
+</li>
+<li>
+<p>A linker script that encodes the memory layout of a generic RISC-V
+microcontroller. This linker script is missing some information that must
+be supplied through a <code>memory.x</code> file (see example below). This file
+must be supplied using rustflags and listed <em>before</em> <code>link.x</code>. Arbitrary
+filename can be use instead of <code>memory.x</code>.</p>
+</li>
+<li>
+<p>A <code>_sheap</code> symbol at whose address you can locate a heap.</p>
+</li>
+<li>
+<p>Support for a runtime in supervisor mode, that can be bootstrapped via <a href="https://github.com/riscv-non-isa/riscv-sbi-doc">Supervisor Binary Interface (SBI)</a></p>
+</li>
+</ul>
+<div class="example-wrap"><pre class="language-text"><code>$ cargo new --bin app &amp;&amp; cd $_
+
+$ # add this crate as a dependency
+$ edit Cargo.toml &amp;&amp; cat $_
+[dependencies]
+riscv-rt = &quot;0.6.1&quot;
+panic-halt = &quot;0.2.0&quot;
+
+$ # memory layout of the device
+$ edit memory.x &amp;&amp; cat $_
+MEMORY
+{
+  RAM : ORIGIN = 0x80000000, LENGTH = 16K
+  FLASH : ORIGIN = 0x20000000, LENGTH = 16M
+}
+
+REGION_ALIAS(&quot;REGION_TEXT&quot;, FLASH);
+REGION_ALIAS(&quot;REGION_RODATA&quot;, FLASH);
+REGION_ALIAS(&quot;REGION_DATA&quot;, RAM);
+REGION_ALIAS(&quot;REGION_BSS&quot;, RAM);
+REGION_ALIAS(&quot;REGION_HEAP&quot;, RAM);
+REGION_ALIAS(&quot;REGION_STACK&quot;, RAM);
+
+$ edit src/main.rs &amp;&amp; cat $_
+</code></pre></div>
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#![no_std]
+#![no_main]
+
+</span><span class="kw">extern crate </span>panic_halt;
+
+<span class="kw">use </span>riscv_rt::entry;
+
+<span class="comment">// use `main` as the entry point of this application
+// `main` is not allowed to return
+</span><span class="attr">#[entry]
+</span><span class="kw">fn </span>main() -&gt; ! {
+    <span class="comment">// do something here
+    </span><span class="kw">loop </span>{ }
+}</code></pre></div>
+<div class="example-wrap"><pre class="language-text"><code>$ mkdir .cargo &amp;&amp; edit .cargo/config &amp;&amp; cat $_
+[target.riscv32imac-unknown-none-elf]
+rustflags = [
+  &quot;-C&quot;, &quot;link-arg=-Tmemory.x&quot;,
+  &quot;-C&quot;, &quot;link-arg=-Tlink.x&quot;,
+]
+
+[build]
+target = &quot;riscv32imac-unknown-none-elf&quot;
+$ edit build.rs &amp;&amp; cat $_
+</code></pre></div>
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::env;
+<span class="kw">use </span>std::fs;
+<span class="kw">use </span>std::path::PathBuf;
+
+<span class="kw">fn </span>main() {
+    <span class="kw">let </span>out_dir = PathBuf::from(env::var(<span class="string">"OUT_DIR"</span>).unwrap());
+
+    <span class="comment">// Put the linker script somewhere the linker can find it.
+    </span>fs::write(out_dir.join(<span class="string">"memory.x"</span>), <span class="macro">include_bytes!</span>(<span class="string">"memory.x"</span>)).unwrap();
+    <span class="macro">println!</span>(<span class="string">"cargo:rustc-link-search={}"</span>, out_dir.display());
+    <span class="macro">println!</span>(<span class="string">"cargo:rerun-if-changed=memory.x"</span>);
+
+    <span class="macro">println!</span>(<span class="string">"cargo:rerun-if-changed=build.rs"</span>);
+}</code></pre></div>
+<div class="example-wrap"><pre class="language-text"><code>$ cargo build
+
+$ riscv32-unknown-elf-objdump -Cd $(find target -name app) | head
+
+Disassembly of section .text:
+
+20000000 &lt;_start&gt;:
+20000000:	800011b7          	lui	gp,0x80001
+20000004:	80018193          	addi	gp,gp,-2048 # 80000800 &lt;_stack_start+0xffffc800&gt;
+20000008:	80004137          	lui	sp,0x80004
+</code></pre></div><h2 id="symbol-interfaces"><a href="#symbol-interfaces">Symbol interfaces</a></h2>
+<p>This crate makes heavy use of symbols, linker sections and linker scripts to
+provide most of its functionality. Below are described the main symbol
+interfaces.</p>
+<h3 id="memoryx"><a href="#memoryx"><code>memory.x</code></a></h3>
+<p>This file supplies the information about the device to the linker.</p>
+<h4 id="memory"><a href="#memory"><code>MEMORY</code></a></h4>
+<p>The main information that this file must provide is the memory layout of
+the device in the form of the <code>MEMORY</code> command. The command is documented
+<a href="https://sourceware.org/binutils/docs/ld/MEMORY.html">here</a>, but at a minimum you’ll want to create at least one memory region.</p>
+<p>To support different relocation models (RAM-only, FLASH+RAM) multiple regions are used:</p>
+<ul>
+<li><code>REGION_TEXT</code> - for <code>.init</code>, <code>.trap</code> and <code>.text</code> sections</li>
+<li><code>REGION_RODATA</code> - for <code>.rodata</code> section and storing initial values for <code>.data</code> section</li>
+<li><code>REGION_DATA</code> - for <code>.data</code> section</li>
+<li><code>REGION_BSS</code> - for <code>.bss</code> section</li>
+<li><code>REGION_HEAP</code> - for the heap area</li>
+<li><code>REGION_STACK</code> - for hart stacks</li>
+</ul>
+<p>Specific aliases for these regions must be defined in <code>memory.x</code> file (see example below).</p>
+<h4 id="_stext"><a href="#_stext"><code>_stext</code></a></h4>
+<p>This symbol provides the loading address of <code>.text</code> section. This value can be changed
+to override the loading address of the firmware (for example, in case of bootloader present).</p>
+<p>If omitted this symbol value will default to <code>ORIGIN(REGION_TEXT)</code>.</p>
+<h4 id="_stack_start"><a href="#_stack_start"><code>_stack_start</code></a></h4>
+<p>This symbol provides the address at which the call stack will be allocated.
+The call stack grows downwards so this address is usually set to the highest
+valid RAM address plus one (this <em>is</em> an invalid address but the processor
+will decrement the stack pointer <em>before</em> using its value as an address).</p>
+<p>In case of multiple harts present, this address defines the initial stack pointer for hart 0.
+Stack pointer for hart <code>N</code> is calculated as  <code>_stack_start - N * _hart_stack_size</code>.</p>
+<p>If omitted this symbol value will default to <code>ORIGIN(REGION_STACK) + LENGTH(REGION_STACK)</code>.</p>
+<h5 id="example"><a href="#example">Example</a></h5>
+<p>Allocating the call stack on a different RAM region.</p>
+<div class="example-wrap"><pre class="language-text"><code>MEMORY
+{
+  L2_LIM : ORIGIN = 0x08000000, LENGTH = 1M
+  RAM : ORIGIN = 0x80000000, LENGTH = 16K
+  FLASH : ORIGIN = 0x20000000, LENGTH = 16M
+}
+
+REGION_ALIAS(&quot;REGION_TEXT&quot;, FLASH);
+REGION_ALIAS(&quot;REGION_RODATA&quot;, FLASH);
+REGION_ALIAS(&quot;REGION_DATA&quot;, RAM);
+REGION_ALIAS(&quot;REGION_BSS&quot;, RAM);
+REGION_ALIAS(&quot;REGION_HEAP&quot;, RAM);
+REGION_ALIAS(&quot;REGION_STACK&quot;, L2_LIM);
+
+_stack_start = ORIGIN(L2_LIM) + LENGTH(L2_LIM);
+</code></pre></div><h4 id="_max_hart_id"><a href="#_max_hart_id"><code>_max_hart_id</code></a></h4>
+<p>This symbol defines the maximum hart id supported. All harts with id
+greater than <code>_max_hart_id</code> will be redirected to <code>abort()</code>.</p>
+<p>This symbol is supposed to be redefined in platform support crates for
+multi-core targets.</p>
+<p>If omitted this symbol value will default to 0 (single core).</p>
+<h4 id="_hart_stack_size"><a href="#_hart_stack_size"><code>_hart_stack_size</code></a></h4>
+<p>This symbol defines stack area size for <em>one</em> hart.</p>
+<p>If omitted this symbol value will default to 2K.</p>
+<h4 id="_heap_size"><a href="#_heap_size"><code>_heap_size</code></a></h4>
+<p>This symbol provides the size of a heap region. The default value is 0. You can set <code>_heap_size</code>
+to a non-zero value if you are planning to use heap allocations.</p>
+<h4 id="_sheap"><a href="#_sheap"><code>_sheap</code></a></h4>
+<p>This symbol is located in RAM right after the <code>.bss</code> and <code>.data</code> sections.
+You can use the address of this symbol as the start address of a heap
+region. This symbol is 4 byte aligned so that address will be a multiple of 4.</p>
+<h5 id="example-1"><a href="#example-1">Example</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern crate </span>some_allocator;
+
+<span class="kw">extern </span><span class="string">"C" </span>{
+    <span class="kw">static </span>_sheap: u8;
+    <span class="kw">static </span>_heap_size: u8;
+}
+
+<span class="kw">fn </span>main() {
+    <span class="kw">unsafe </span>{
+        <span class="kw">let </span>heap_bottom = <span class="kw-2">&amp;</span>_sheap <span class="kw">as </span><span class="kw-2">*const </span>u8 <span class="kw">as </span>usize;
+        <span class="kw">let </span>heap_size = <span class="kw-2">&amp;</span>_heap_size <span class="kw">as </span><span class="kw-2">*const </span>u8 <span class="kw">as </span>usize;
+        some_allocator::initialize(heap_bottom, heap_size);
+    }
+}</code></pre></div>
+<h4 id="_mp_hook"><a href="#_mp_hook"><code>_mp_hook</code></a></h4>
+<p>This function is called from all the harts and must return true only for one hart,
+which will perform memory initialization. For other harts it must return false
+and implement wake-up in platform-dependent way (e.g. after waiting for a user interrupt).
+The parameter <code>hartid</code> specifies the hartid of the caller.</p>
+<p>This function can be redefined in the following way:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[export_name = <span class="string">"_mp_hook"</span>]
+</span><span class="kw">pub extern </span><span class="string">"Rust" </span><span class="kw">fn </span>mp_hook(hartid: usize) -&gt; bool {
+   <span class="comment">// ...
+</span>}</code></pre></div>
+<p>Default implementation of this function wakes hart 0 and busy-loops all the other harts.</p>
+<h4 id="exceptionhandler"><a href="#exceptionhandler"><code>ExceptionHandler</code></a></h4>
+<p>This function is called when exception is occured. The exception reason can be decoded from the
+<code>mcause</code>/<code>scause</code> register.</p>
+<p>This function can be redefined in the following way:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[export_name = <span class="string">"ExceptionHandler"</span>]
+</span><span class="kw">fn </span>custom_exception_handler(trap_frame: <span class="kw-2">&amp;</span>riscv_rt::TrapFrame) -&gt; ! {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>or</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[no_mangle]
+</span><span class="kw">fn </span>ExceptionHandler(trap_frame: <span class="kw-2">&amp;</span>riscv_rt::TrapFrame) -&gt; ! {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>Default implementation of this function stucks in a busy-loop.</p>
+<h4 id="core-interrupt-handlers"><a href="#core-interrupt-handlers">Core interrupt handlers</a></h4>
+<p>This functions are called when corresponding interrupt is occured.
+You can define an interrupt handler with one of the following names:</p>
+<ul>
+<li><code>UserSoft</code></li>
+<li><code>SupervisorSoft</code></li>
+<li><code>MachineSoft</code></li>
+<li><code>UserTimer</code></li>
+<li><code>SupervisorTimer</code></li>
+<li><code>MachineTimer</code></li>
+<li><code>UserExternal</code></li>
+<li><code>SupervisorExternal</code></li>
+<li><code>MachineExternal</code></li>
+</ul>
+<p>For example:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[export_name = <span class="string">"MachineTimer"</span>]
+</span><span class="kw">fn </span>custom_timer_handler() {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>or</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[no_mangle]
+</span><span class="kw">fn </span>MachineTimer() {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>If interrupt handler is not explicitly defined, <code>DefaultHandler</code> is called.</p>
+<h4 id="defaulthandler"><a href="#defaulthandler"><code>DefaultHandler</code></a></h4>
+<p>This function is called when interrupt without defined interrupt handler is occured.
+The interrupt reason can be decoded from the <code>mcause</code>/<code>scause</code> register.</p>
+<p>This function can be redefined in the following way:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[export_name = <span class="string">"DefaultHandler"</span>]
+</span><span class="kw">fn </span>custom_interrupt_handler() {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>or</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[no_mangle]
+</span><span class="kw">fn </span>DefaultHandler() {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>Default implementation of this function stucks in a busy-loop.</p>
+<h2 id="features-1"><a href="#features-1">Features</a></h2><h3 id="s-mode"><a href="#s-mode"><code>s-mode</code></a></h3>
+<p>The supervisor mode feature (<code>s-mode</code>) can be activated via <a href="https://doc.rust-lang.org/cargo/reference/features.html">Cargo features</a>.</p>
+<p>For example:</p>
+<div class="example-wrap"><pre class="language-text"><code>[dependencies]
+riscv-rt = {features=[&quot;s-mode&quot;]}
+</code></pre></div>
+<p>Internally, riscv-rt uses different versions of precompiled static libraries
+for (i) machine mode and (ii) supervisor mode. If the <code>s-mode</code> feature was activated,
+the build script selects the s-mode library. While most registers/instructions have variants for
+both <code>mcause</code> and <code>scause</code>, the <code>mhartid</code> hardware thread register is not available in supervisor
+mode. Instead, the hartid is passed as parameter by a bootstrapping firmware (i.e., SBI).</p>
+<p>Use case: QEMU supports <a href="https://github.com/riscv-software-src/opensbi">OpenSBI</a> as default firmware.
+Using the SBI requires riscv-rt to be run in supervisor mode instead of machine mode.</p>
+<div class="example-wrap"><pre class="language-text"><code>APP_BINARY=$(find target -name app)
+sudo qemu-system-riscv64 -m 2G -nographic -machine virt -kernel $APP_BINARY
+</code></pre></div>
+<p>It requires the memory layout to be non-overlapping, like</p>
+<div class="example-wrap"><pre class="language-text"><code>MEMORY
+{
+  RAM : ORIGIN = 0x80200000, LENGTH = 0x8000000
+  FLASH : ORIGIN = 0x20000000, LENGTH = 16M
+}
+</code></pre></div></div></details><h2 id="reexports" class="section-header"><a href="#reexports">Re-exports</a></h2><ul class="item-table"><li><div class="item-name" id="reexport.interrupt"><code>pub use self::Interrupt as interrupt;</code></div></li></ul><h2 id="structs" class="section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.TrapFrame.html" title="struct riscv_rt::TrapFrame">TrapFrame</a></div><div class="desc docblock-short">Registers saved in trap handler</div></li></ul><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2><ul class="item-table"><li><div class="item-name"><a class="fn" href="fn.start_rust.html" title="fn riscv_rt::start_rust">start_rust</a><sup title="unsafe function">⚠</sup></div><div class="desc docblock-short">Rust entry point (_start_rust)</div></li><li><div class="item-name"><a class="fn" href="fn.start_trap_rust.html" title="fn riscv_rt::start_trap_rust">start_trap_rust</a></div><div class="desc docblock-short">Trap entry point rust (_start_trap_rust)</div></li></ul><h2 id="attributes" class="section-header"><a href="#attributes">Attribute Macros</a></h2><ul class="item-table"><li><div class="item-name"><a class="attr" href="attr.entry.html" title="attr riscv_rt::entry">entry</a></div><div class="desc docblock-short">Attribute to declare the entry point of the program</div></li><li><div class="item-name"><a class="attr" href="attr.pre_init.html" title="attr riscv_rt::pre_init">pre_init</a></div><div class="desc docblock-short">Attribute to mark which function will be called at the beginning of the reset handler.</div></li></ul></section></div></main></body></html>
