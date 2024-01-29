@@ -165,7 +165,7 @@ dependencies = [
 
 [[package]]
 name = "shakti_riscv_hal"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "panic-halt",
  "riscv",
