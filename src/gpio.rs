@@ -64,4 +64,7 @@ impl GPIOInner {
             }
         }
     }
+    pub fn set_direction_control(&self mut,value: u32) {
+        self.registers.DIRECTION_CR_REG.write(value);
+    }
 }
