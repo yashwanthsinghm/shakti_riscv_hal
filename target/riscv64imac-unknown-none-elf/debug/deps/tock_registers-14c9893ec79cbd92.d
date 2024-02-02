@@ -1,0 +1,10 @@
+/home/yky2kor/shakti_riscv_hal/target/riscv64imac-unknown-none-elf/debug/deps/tock_registers-14c9893ec79cbd92.rmeta: /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/lib.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/fields.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/interfaces.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/macros.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/registers.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/local_register.rs
+
+/home/yky2kor/shakti_riscv_hal/target/riscv64imac-unknown-none-elf/debug/deps/tock_registers-14c9893ec79cbd92.d: /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/lib.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/fields.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/interfaces.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/macros.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/registers.rs /home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/local_register.rs
+
+/home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/lib.rs:
+/home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/fields.rs:
+/home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/interfaces.rs:
+/home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/macros.rs:
+/home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/registers.rs:
+/home/yky2kor/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tock-registers-0.9.0/src/local_register.rs:
