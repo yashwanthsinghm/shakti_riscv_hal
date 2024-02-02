@@ -1,4 +1,11 @@
-use shakti_riscv_hal::gpio::{GPIOInner, I2C_OFFSET} ;
+#![no_std]
+#![no_main]
+#![feature(asm)]
+
+use riscv::{asm::delay, delay};
+// use cortex_m_rt::entry;
+use riscv_rt::entry;
+use shakti_riscv_hal::gpio::{GPIOInner, GPIO_OFFSET} ;
 
 mod gpio_constants;
 use gpio_constants::*;
@@ -32,7 +39,37 @@ const DELAY2: u32 = 1000;
 //     self.registers.DATA_REG.write(1 << led);
 // }
 // }
+struct GPIO_ACCESS
+{
+  gpio : GPIOInner
+}
+impl GPIO_ACCESS
+{
+    pub fn new() -> GPIO_ACCESS
+    {
+       GPIO_ACCESS{
+        gpio : unsafe { GPIOInner::new(GPIO_OFFSET) }
+       }
+    }
+    pub fn turn_on_ledx(&mut self, led: u32) {
+        // Implementation specific to the GPIO crate
+        //gpio.registers.DATA_REG.write(1 << led);
+        self.gpio.set_data_register(led);
+    }
+    
+    // Function to turn off an LED
+    pub fn turn_off_ledx(&mut self) {
+        // Implementation specific to the GPIO crate
+        self.gpio.set_data_register(0);
+    }
 
+    pub fn set_direction(&mut self,value:u32) {
+        // Implementation specific to the GPIO crate
+        self.gpio.set_direction_control(value);
+    }
+    
+
+}
 
 
 fn main() {
@@ -40,79 +77,69 @@ fn main() {
     let gpio_mmio_start_addr = 0x1000;
     
         
-    let gpio = unsafe { GPIOInner::new(gpio_mmio_start_addr + I2C_OFFSET) };
-    
+    let mut gpio_access = GPIO_ACCESS::new(); 
+    gpio_access.set_direction(0x00);
+    gpio_access.turn_off_ledx();  
 
         // Set the direction control register
-    gpio.set_direction_control(0x0);
+    //gpio.set_direction_control(0x0);
     
         // Write to GPIO_DATA_REG to initialize GPIO pins
-    gpio.set_data_register(0x0); // Assuming initialization value is 0x0
+    //gpio.set_data_register(0x0); // Assuming initialization value is 0x0
     
 
     loop {
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(&gpio, LED0_G);
+            gpio_access.turn_on_ledx(LED0_G);
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(&gpio, LED0_B);
+            gpio_access.turn_on_ledx(LED0_B);
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(&gpio, LED0_R);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(&gpio, LED0_G);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(&gpio, LED0_B);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(&gpio, LED1_R);
+            gpio_access.turn_on_ledx(LED1_R);
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(&gpio, LED1_G);
+            gpio_access.turn_on_ledx(LED1_G);
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(&gpio, LED1_B);
+            gpio_access.turn_on_ledx(LED1_B);
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(&gpio, LED1_R);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(&gpio, LED1_G);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(&gpio, LED1_B);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(&gpio, LED2);
+            gpio_access.turn_on_ledx(LED2);
             delay_loop(DELAY1, DELAY2);
 
-            turn_on_ledx(gpio, LED3);
+            gpio_access.turn_on_ledx(LED3);
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(gpio, LED2);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
 
-            turn_off_ledx(gpio, LED3);
+            gpio_access.turn_off_ledx();
             delay_loop(DELAY1, DELAY2);
     }
 }
 
 
 // Function to turn on an LED
-pub fn turn_on_ledx(gpio: &GPIOInner, led: u32) {
-    // Implementation specific to the GPIO crate
-    //gpio.registers.DATA_REG.write(1 << led);
-    gpio.set_data_register(1<<led);
-}
-
-// Function to turn off an LED
-pub fn turn_off_ledx(gpio: &GPIOInner, led: u32) {
-    // Implementation specific to the GPIO crate
-    gpio.set_data_register(0);
-}
 
 // Function to perform delay loop
 
@@ -127,3 +154,11 @@ pub fn delay_loop(mut cntr1: u32, mut cntr2: u32) {
             cntr1 -= 1;
         }
     }
+
+
+ #[panic_handler] // panicking behavior
+fn panic(_: &core::panic::PanicInfo) -> ! {
+    loop {
+        unsafe { riscv::asm::nop() };
+    }
+}

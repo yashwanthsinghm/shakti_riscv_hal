@@ -167,14 +167,14 @@ dependencies = [
 name = "shakthi_blinky"
 version = "0.1.0"
 dependencies = [
+ "riscv",
+ "riscv-rt",
  "shakti_riscv_hal",
 ]
 
 [[package]]
 name = "shakti_riscv_hal"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1437b28a0c2fde1b9a8f34d7fe46aca187ec3f5775200a3802695cec5a69a323"
+version = "0.1.1"
 dependencies = [
  "panic-halt",
  "riscv",
