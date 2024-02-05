@@ -1,0 +1,3 @@
+cargo:rustc-link-search=/home/iyg1kor/projects/Shakti/shakti_riscv_hal/examples/gpio_applns/target/riscv64imac-unknown-none-elf/debug/build/shakti_riscv_hal-8ec473b2deef3027/out
+cargo:rerun-if-changed=memory.x
+cargo:rerun-if-changed=build.rs

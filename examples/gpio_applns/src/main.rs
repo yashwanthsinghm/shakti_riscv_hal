@@ -72,13 +72,14 @@ impl GPIO_ACCESS
 }
 
 
-fn main() {
+#[entry]
+fn main() -> ! {
     
     let gpio_mmio_start_addr = 0x1000;
     
         
     let mut gpio_access = GPIO_ACCESS::new(); 
-    gpio_access.set_direction(0x00);
+    gpio_access.set_direction(LED0_B|LED0_G|LED0_R|LED1_B|LED1_G|LED1_R|LED2|LED3);
     gpio_access.turn_off_ledx();  
 
         // Set the direction control register

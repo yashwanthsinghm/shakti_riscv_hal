@@ -453,11 +453,13 @@ impl SPIInner {
         );
 
         //waitfor(20);
-        while self
-            .registers
-            .SPI_SR
-            .any_matching_bits_set(SPI_SR::SPI_BSY::SET)
-        {}
+        unsafe{delay(1000);}
+        self.spi_not_busy();
+        // while self
+        //     .registers
+        //     .SPI_SR
+        //     .any_matching_bits_set(SPI_SR::SPI_BSY::SET)
+        // {}
         1
     }
 
@@ -485,19 +487,20 @@ impl SPIInner {
             SPI_CR1::SPI_CPOL::ONE_IDLE
                 + SPI_CR1::SPI_CPHA::SECOND_CLK
                 + SPI_CR1::SPI_BR.val(7)
-                + SPI_CR1::SPI_SPE::SET
-                + SPI_CR1::SPI_TOTAL_BITS_RX::CLEAR
+                + SPI_CR1::SPI_SPE::ENABLED
+                + SPI_CR1::SPI_TOTAL_BITS_RX.val(0)
                 + SPI_CR1::SPI_TOTAL_BITS_TX.val(72),
         );
-
+     unsafe { delay(1000) };
+     self.spi_not_busy();
         //waitfor(20);
-        while self
-            .registers
-            .SPI_SR
-            .any_matching_bits_set(SPI_SR::SPI_BSY::SET)
-        {}
+        // while self
+        //     .registers
+        //     .SPI_SR
+        //     .any_matching_bits_set(SPI_SR::SPI_BSY::SET)
+        // {}
 
-        //flash_status_register_read();
+        self.flash_status_register_read();
     }
 
     /**
@@ -578,7 +581,7 @@ impl SPIInner {
         let mut dr5 = 0;
         self.registers.SPI_DR1.set(command);
         self.registers.SPI_DR5.set(command);
-
+        self.spi_tx_rx_start();
         self.registers.SPI_CR1.modify(
             SPI_CR1::SPI_CPOL::ONE_IDLE
                 + SPI_CR1::SPI_CPHA::SECOND_CLK
@@ -591,7 +594,7 @@ impl SPIInner {
         if self.spi_rxne_enable() {
             dr5 = self.registers.SPI_DR5.get();
         }
-        dr5
+     dr5
     }
 
     pub fn bitEXtracted(&mut self, number: u32, k: u32, p: u32) -> u32 {
@@ -606,7 +609,7 @@ impl SPIInner {
      * @param int (address (address from which data should erase))
      */
     pub fn flash_erase(&mut self, address: u32) {
-        SPIInner::flash_cmd_addr(self, 0xdc000000, address);
+        self.flash_cmd_addr(0xdc000000, address);
     }
 
     pub fn spi_rxne_enable(&mut self) -> bool {
@@ -620,7 +623,9 @@ impl SPIInner {
         while match self.registers.SPI_SR.get() & 0x80 {
             0x80 => true,
             _ => false,
-        } {}
+        } {
+            unsafe{delay(1000);}
+        }
     }
     pub fn flash_status_register_read(&mut self) {
         while match self.flash_cmd_read(0x05000000) & 0x03 {
@@ -629,3 +634,4 @@ impl SPIInner {
         } {}
     }
 }
+

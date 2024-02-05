@@ -14,7 +14,7 @@ use tock_registers::{
 // Private Definitions
 //--------------------------------------------------------------------------------------------------
 
-pub const I2C_OFFSET: usize = 0x0004_0100;
+pub const GPIO_OFFSET: usize = 0x0004_0100;
 
 register_structs! {
     #[allow(non_snake_case)]
