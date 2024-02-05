@@ -18,7 +18,7 @@ use self::SPI_CR1::SPI_TOTAL_BITS_TX;
 
 pub const SPI_OFFSET: usize = 0x0002_0000;
 
- register_bitfields! {
+register_bitfields! {
     u32,
 
     SPI_CR1 [
@@ -259,7 +259,7 @@ pub const SPI_OFFSET: usize = 0x0002_0000;
 
 }
 
- register_structs! {
+register_structs! {
     #[allow(non_snake_case)]
     pub RegisterBlock{
         (0x00 => SPI_CR1: ReadWrite<u32, SPI_CR1::Register>),
@@ -453,7 +453,9 @@ impl SPIInner {
         );
 
         //waitfor(20);
-        unsafe{delay(1000);}
+        unsafe {
+            delay(1000);
+        }
         self.spi_not_busy();
         // while self
         //     .registers
@@ -491,8 +493,8 @@ impl SPIInner {
                 + SPI_CR1::SPI_TOTAL_BITS_RX.val(0)
                 + SPI_CR1::SPI_TOTAL_BITS_TX.val(72),
         );
-     unsafe { delay(1000) };
-     self.spi_not_busy();
+        unsafe { delay(1000) };
+        self.spi_not_busy();
         //waitfor(20);
         // while self
         //     .registers
@@ -594,7 +596,7 @@ impl SPIInner {
         if self.spi_rxne_enable() {
             dr5 = self.registers.SPI_DR5.get();
         }
-     dr5
+        dr5
     }
 
     pub fn bitEXtracted(&mut self, number: u32, k: u32, p: u32) -> u32 {
@@ -624,7 +626,9 @@ impl SPIInner {
             0x80 => true,
             _ => false,
         } {
-            unsafe{delay(1000);}
+            unsafe {
+                delay(1000);
+            }
         }
     }
     pub fn flash_status_register_read(&mut self) {
@@ -634,4 +638,3 @@ impl SPIInner {
         } {}
     }
 }
-
