@@ -1,0 +1,1 @@
+{"rustc":9628644194264516170,"features":"","target":0,"profile":0,"path":0,"deps":[[3125866281033745482,"build_script_build",false,1021524854497682058]],"local":[{"RerunIfChanged":{"output":"riscv64imac-unknown-none-elf/debug/build/shakti_riscv_hal-07327260af64b9f4/output","paths":["memory.x","build.rs"]}}],"rustflags":[],"metadata":0,"config":0,"compile_kind":0}
