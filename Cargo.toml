@@ -1,6 +1,6 @@
 [package]
 name = "shakti_riscv_hal"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Yashwanth Singh M <yashwanthsinghm@gmail.com>"]
 description = "Hardware abstraction layer for Shakti processor"
 repository = "https://github.com/yashwanthsinghm/shakti_riscv_hal"
