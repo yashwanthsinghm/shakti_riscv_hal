@@ -6,8 +6,8 @@ The Shakti processor is an open-source initiative by IIT Madras, dedicated to de
 
 ## How to use this hal
 
-[Shakti Rust Book]() : 
+[Shakti Rust Book](https://yashwanthsinghm.github.io/shakti-rust-book/) : 
 The Shakti Rust Book serves as open-source documentation for the Shakti Rust SDK repository. It provides comprehensive information, guides, and documentation for developers looking to utilize the Shakti RISC-V hardware abstraction layer and run secure and memory-safe code on Shakti family chips using Rust. This resource is openly accessible to the community for learning and contributing to the development of Shakti-based projects.
-Click here for Book : [ShaktiRustBook]()
+Click here for Book : [ShaktiRustBook](https://yashwanthsinghm.github.io/shakti-rust-book/)
 
 
