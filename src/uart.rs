@@ -259,7 +259,7 @@ impl UartInner {
             }
         }
     }
-}
+
 
 
     // raw access ==================================================
@@ -358,4 +358,5 @@ impl UartInner {
         } {}
         self.registers.TX_REG.set(self.registers.RCV_REG.get())
     }
+
 }

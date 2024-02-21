@@ -18,6 +18,7 @@ use crate::common::MMIODerefWrapper;
 
 use self::SPI_CR1::SPI_TOTAL_BITS_TX;
 
+/// Base address of the SPI peripheral register block
 pub const SPI_OFFSET: usize = 0x0002_0000;
 
 register_bitfields! {
@@ -287,35 +288,62 @@ register_bitfields! {
 
 register_structs! {
     #[allow(non_snake_case)]
-    pub RegisterBlock{
+    ///Register Block  
+    pub RegisterBlock {
+        /// SPI Control Register 1 (SPI_CR1)
         (0x00 => SPI_CR1: ReadWrite<u32, SPI_CR1::Register>),
+
+        /// SPI Control Register 2 (SPI_CR2)
         (0x04 => SPI_CR2: ReadWrite<u32, SPI_CR2::Register>),
-        (0x08 => SPI_SR:  ReadOnly <u32, SPI_SR ::Register>),
-        (0x0C => SPI_DR1: ReadWrite <u32, SPI_DR1::Register>),
-        (0x10 => SPI_DR2: ReadWrite <u32, SPI_DR2::Register>),
-        (0x14 => SPI_DR3: ReadWrite <u32, SPI_DR3::Register>),
-        (0x18 => SPI_DR4: ReadWrite <u32, SPI_DR4::Register>),
-        (0x1C => SPI_DR5: ReadWrite <u32, SPI_DR5::Register>),
+
+        /// SPI Status Register (SPI_SR)
+        (0x08 => SPI_SR: ReadOnly<u32, SPI_SR::Register>),
+
+        /// SPI Data Register 1 (SPI_DR1)
+        (0x0C => SPI_DR1: ReadWrite<u32, SPI_DR1::Register>),
+
+        /// SPI Data Register 2 (SPI_DR2)
+        (0x10 => SPI_DR2: ReadWrite<u32, SPI_DR2::Register>),
+
+        /// SPI Data Register 3 (SPI_DR3)
+        (0x14 => SPI_DR3: ReadWrite<u32, SPI_DR3::Register>),
+
+        /// SPI Data Register 4 (SPI_DR4)
+        (0x18 => SPI_DR4: ReadWrite<u32, SPI_DR4::Register>),
+
+        /// SPI Data Register 5 (SPI_DR5)
+        (0x1C => SPI_DR5: ReadWrite<u32, SPI_DR5::Register>),
+
+        /// Reserved register (0x20)
         (0x20 => _reserved),
+
+        /// End marker
         (0x2C => @END),
     }
 }
 
+
 /// Abstraction for the associated MMIO registers.
 type Registers = MMIODerefWrapper<RegisterBlock>;
 
+/// Internal representation of an SPI peripheral
 pub struct SPIInner {
+    /// Memory-mapped registers for interacting with the SPI hardware
     registers: Registers,
 }
 
 impl SPIInner {
+    /// Creates a new instance of SPIInner, unsafe due to direct hardware access
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
+                /// Initializes the registers with the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }
     }
+
+
 
     /// Function to initialize the SPI controller.
 
@@ -755,4 +783,5 @@ impl SPIInner {
             _ => false,
         } {}
     }
+
 }

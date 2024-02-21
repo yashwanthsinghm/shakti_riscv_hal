@@ -27,17 +27,27 @@ use tock_registers::{
 // Private Definitions
 //--------------------------------------------------------------------------------------------------
 
+/// Base address of the GPIO peripheral register block
 pub const GPIO_OFFSET: usize = 0x0004_0100;
 
 register_structs! {
     #[allow(non_snake_case)]
-    pub RegistersBlock{
+    ///Register Block
+    pub RegistersBlock {
+        /// GPIO direction/control register (DIRECTION_CR_REG)
         (0x00 => DIRECTION_CR_REG: ReadWrite<u32>),
+
+        /// Reserved register (0x04)
         (0x04 => _reserved0),
+
+        /// GPIO data register (DATA_REG)
         (0x08 => DATA_REG: ReadWrite<u32>),
+
+        /// End marker
         (0x0C => @END),
     }
 }
+
 
 register_bitfields! {
     u32,
@@ -53,7 +63,10 @@ register_bitfields! {
 
 type Registers = MMIODerefWrapper<RegistersBlock>;
 
+
+/// Internal representation of a GPIO peripheral
 pub struct GPIOInner {
+    /// Memory-mapped registers for interacting with the GPIO hardware
     registers: Registers,
 }
 
@@ -62,9 +75,11 @@ pub struct GPIOInner {
 ///2. Write appropriate values to the GPIO DATA register.
 
 impl GPIOInner {
+    /// Creates a new instance of the struct, unsafely accessing memory-mapped registers
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
+                //Initializes the internal registers using the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }

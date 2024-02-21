@@ -25,39 +25,78 @@ use tock_registers::{
 // Private Definitions
 //--------------------------------------------------------------------------------------------------
 
+/// Base address of the I2C peripheral register block
 pub const I2C_OFFSET: usize = 0x0004_0000;
 
-pub const I2C_INI: u8 = 1 << 7;
-pub const I2C_STS: u8 = 1 << 5;
-pub const I2C_BER: u8 = 1 << 4;
+/// I2C_INI Register bit masks
+/// Initialization bit
+pub const I2C_INI: u8 = 1 << 7; 
+/// Status bit
+pub const I2C_STS: u8 = 1 << 5; 
+/// Bus Error bit
+pub const I2C_BER: u8 = 1 << 4; 
+/// Address/Data 0 (Read/Write bit)
 pub const I2C_AD0_LRB: u8 = 1 << 3;
-pub const I2C_AAS: u8 = 1 << 2;
+/// Acknowledge Address/Stop bit 
+pub const I2C_AAS: u8 = 1 << 2; 
+/// Last Bit bit
 pub const I2C_LAB: u8 = 1 << 1;
-pub const I2C_BB: u8 = 1 << 0;
+/// Bus Busy bit 
+pub const I2C_BB: u8 = 1 << 0; 
 
-pub const I2C_PIN: u8 = 1 << 7;
-pub const I2C_ES0: u8 = 1 << 6;
+// I2C_PIN Register bit masks
+/// Pin Select bit
+pub const I2C_PIN: u8 = 1 << 7; 
+/// Enable Slave 0 bit
+pub const I2C_ES0: u8 = 1 << 6; 
+/// Enable Interrupt (Read/Write bit)
 pub const I2C_ENI_LRB: u8 = 1 << 3;
-pub const I2C_STA: u8 = 1 << 2;
-pub const I2C_STO: u8 = 1 << 1;
-pub const I2C_ACK: u8 = 1 << 0;
+/// Start condition bit 
+pub const I2C_STA: u8 = 1 << 2; 
+/// Stop condition bit
+pub const I2C_STO: u8 = 1 << 1; 
+/// Acknowledge bit
+pub const I2C_ACK: u8 = 1 << 0; 
 
 register_structs! {
     #[allow(non_snake_case)]
-    pub RegistersBlock{
+    ///Register Block 
+    pub RegistersBlock {
+        /// Prescaler register (PRESCALE)
         (0x00 => PRESCALE: ReadWrite<u16>),
+
+        /// Reserved register (0x02)
         (0x02 => _reserved0),
+
+        /// Control register (CONTROL)
         (0x08 => CONTROL: ReadWrite<u8>),
+
+        /// Reserved register (0x09)
         (0x09 => _reserved1),
+
+        /// Data register (DATA)
         (0x10 => DATA: ReadWrite<u8>),
+
+        /// Reserved register (0x11)
         (0x11 => _reserved2),
-        (0x18 => STATUS : ReadWrite<u8>),
+
+        /// Status register (STATUS)
+        (0x18 => STATUS: ReadWrite<u8>),
+
+        /// Reserved register (0x19)
         (0x19 => _reserved3),
-        (0x38 => SCL : ReadWrite<u8>),
-        (0x39 => _reserved4)
-,       (0x3C => @END),
+
+        /// Serial Clock register (SCL)
+        (0x38 => SCL: ReadWrite<u8>),
+
+        /// Reserved register (0x39)
+        (0x39 => _reserved4),
+
+        /// End marker
+        (0x3C => @END),
     }
 }
+
 
 register_bitfields! {
     u32,
@@ -177,16 +216,21 @@ register_bitfields! {
 
 type Registers = MMIODerefWrapper<RegistersBlock>;
 
+/// Internal representation of an I2C peripheral
 pub struct I2CInner {
+    /// Memory-mapped registers for interacting with the I2C hardware
     registers: Registers,
 }
 
 impl I2CInner {
+    /// Creates a new instance of I2CInner, unsafe due to direct hardware access
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
+                // Initializes the registers with the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }
     }
 }
+

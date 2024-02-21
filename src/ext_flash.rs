@@ -6,14 +6,18 @@
 /// external spi flash
 use crate::spi::{self, SPIInner};
 
+/// Represents a flash memory chip accessible through SPI communication
 pub struct Flash {
+    /// Internal SPI peripheral instance for interacting with the flash memory
     spi: SPIInner,
 }
 
 impl Flash {
+    /// Creates a new Flash instance, taking an SPIInner object as input
     pub fn new(spi: SPIInner) -> Self {
         Flash { spi }
     }
+
 
     /// Write Enable Latch (WEL) bit setting.
     ///

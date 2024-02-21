@@ -22,39 +22,68 @@ use tock_registers::{
 // Private Definitions
 //--------------------------------------------------------------------------------------------------
 
+/// Base address of the PWM peripheral register block
 pub const PWM_OFFSET: usize = 0x0003_0000;
 
-pub const RESET_COUNTER: u8 = 1 << 7;
-pub const INTERRUPT: u8 = 1 << 5;
-pub const PWM_OUTPUT_ENABLE: u8 = 1 << 4;
-pub const CONTINOUS_ONCE: u8 = 1 << 3;
-pub const PWMSTART: u8 = 1 << 2;
-pub const PWM_ENABLE: u8 = 1 << 1;
-pub const CLOCK_SELECT: u8 = 1 << 0;
+/// PWM register bit masks
+/// Reset counter bit
+pub const RESET_COUNTER: u8 = 1 << 7;        
+/// Interrupt enable bit
+pub const INTERRUPT: u8 = 1 << 5;            
+/// PWM output enable bit
+pub const PWM_OUTPUT_ENABLE: u8 = 1 << 4;     
+/// Continuous or one-shot mode bit
+pub const CONTINOUS_ONCE: u8 = 1 << 3;       
+/// Start PWM generation bit 
+pub const PWMSTART: u8 = 1 << 2;             
+/// Enable PWM module bit
+pub const PWM_ENABLE: u8 = 1 << 1;            
+/// Clock source selection bit
+pub const CLOCK_SELECT: u8 = 1 << 0;          
 
 register_structs! {
     #[allow(non_snake_case)]
-    pub RegistersBlock{
+    ///Register Block 
+    pub RegistersBlock {
+        /// PWM Period Register (PERIOD_REGISTOR)
         (0x00 => PERIOD_REGISTOR: ReadWrite<u16>),
+
+        /// Reserved register (0x02)
         (0x02 => _reserved0),
+
+        /// PWM Duty Cycle Register (DUTY_REGISTER)
         (0x04 => DUTY_REGISTER: ReadWrite<u16>),
+
+        /// Reserved register (0x06)
         (0x06 => _reserved1),
+
+        /// PWM Control Register (CONTROL_REGISTER)
         (0x08 => CONTROL_REGISTER: ReadWrite<u8>),
+
+        /// Reserved register (0x09)
         (0x09 => _reserved2),
-        (0x0C => CLOCK_REGISTER : ReadWrite<u16>),
+
+        /// PWM Clock Register (CLOCK_REGISTER)
+        (0x0C => CLOCK_REGISTER: ReadWrite<u16>),
+
+        /// Reserved register (0x0E)
         (0x0E => _reserved3),
+
+        /// End marker
         (0x1C => @END),
     }
 }
 
-///Note:
-///PWM Frequency = system clock / (2 * prescaler reg * period reg )
-///= 50000000/(2 * 61440 * 240)
-///= 1.688Hz
-///PWM Period = 1 / PWM frequency
-///= 1 / 1.688Hz = 0.589824 seconds
-///PWM On time = (PWM Duty reg * PWM period ) / ( PWM Period reg)
-///= 128 * 0.589824 / 240 = 0.3145728 seconds
+
+
+//Note:
+//PWM Frequency = system clock / (2 * prescaler reg * period reg )
+//= 50000000/(2 * 61440 * 240)
+//= 1.688Hz
+//PWM Period = 1 / PWM frequency
+//= 1 / 1.688Hz = 0.589824 seconds
+//PWM On time = (PWM Duty reg * PWM period ) / ( PWM Period reg)
+//= 128 * 0.589824 / 240 = 0.3145728 seconds
 
 register_bitfields! {
     u32,
@@ -135,14 +164,18 @@ register_bitfields! {
 
 type Registers = MMIODerefWrapper<RegistersBlock>;
 
+/// Internal representation of a PWM peripheral
 pub struct PWMInner {
+   /// Memory-mapped registers for interacting with the PWM hardware
     registers: Registers,
 }
 
 impl PWMInner {
+    /// Creates a new instance of PWMInner, unsafe due to direct hardware access
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
+                // Initializes the registers with the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }
