@@ -25,46 +25,77 @@ use tock_registers::{
 // Private Definitions
 //--------------------------------------------------------------------------------------------------
 
+/// Base address of the UART peripheral register block
 pub const UART_OFFSET: usize = 0x0001_1300;
-pub const STS_TX_FULL_FLAG: u8 = 0x02;
-pub const STS_RX_NOT_EMPTY_FLAG: u8 = 0x08;
 
+// Status register flags
+/// Transmitter full flag
+pub const STS_TX_FULL_FLAG: u8 = 0x02;
+/// Receiver not empty flag 
+pub const STS_RX_NOT_EMPTY_FLAG: u8 = 0x08; 
+
+/// Error flags (also in the status register)
 pub const BREAK_ERROR: u8 = 1 << 7;
+///Frame error flag
 pub const FRAME_ERROR: u8 = 1 << 6;
+///Overrun error flag 
 pub const OVERRUN: u8 = 1 << 5;
+///Parity error flag 
 pub const PARITY_ERROR: u8 = 1 << 4;
-pub const STS_RX_FULL: u8 = 1 << 3;
+
+/// Status register bit positions
+/// Receiver full flag
+pub const STS_RX_FULL: u8 = 1 << 3; 
+/// Receiver not empty flag
 pub const STS_RX_NOT_EMPTY: u8 = 1 << 2;
-pub const STS_TX_FULL: u8 = 1 << 1;
-pub const STS_TX_EMPTY: u8 = 1 << 0;
+/// Transmitter full flag
+pub const STS_TX_FULL: u8 = 1 << 1; 
+/// Transmitter empty flag
+pub const STS_TX_EMPTY: u8 = 1 << 0; 
+
 
 register_structs! {
     #[allow(non_snake_case)]
-    pub RegistersBlock{
+    /// Register blocks 
+    pub RegistersBlock {
+        /// UART Baud Rate Register (UBR)
         (0x00 => UBR: ReadWrite<u16>),
+
+        /// Reserved register (0x02)
         (0x02 => _reserved0),
+
+        /// UART Transmit Register (TX_REG)
         (0x04 => TX_REG: WriteOnly<u32>),
+
+        /// UART Receive Register (RCV_REG)
         (0x08 => RCV_REG: ReadOnly<u32, RCV_REG::Register>),
-        (0x0C => USR : ReadOnly<u8, USR::Register>),
+
+        /// UART Status Register (USR)
+        (0x0C => USR: ReadOnly<u8, USR::Register>),
+
+        /// Reserved register (0x0D)
         (0x0D => _reserved1),
-        //(0x0E => _reserved2),
+
+        /// UART Line Delay Register (DELAY)
         (0x10 => DELAY: ReadWrite<u32, DELAY::Register>),
-        // (0x12 => _reserved3),
+
+        /// UART Control Register (UCR)
         (0x14 => UCR: ReadWrite<u32, UCR::Register>),
-        // (0x16 => _reserved4),
+
+        /// UART Interrupt Enable Register (IEN)
         (0x18 => IEN: ReadWrite<u32, IEN::Register>),
-        // (0x1A => _reserved5),
+
+        /// UART Integer Qualifier Cycles Register (IQCYCLES)
         (0x1C => IQCYCLES: ReadWrite<u32, IQCYCLES::Register>),
-        // (0x1D => _reserved6),
-        // (0x1E => _reserved7),
-        // (0x1F => _reserved11),
+
+        /// UART Receive Threshold Register (RX_THRESHOLD)
         (0x20 => RX_THRESHOLD: WriteOnly<u32, RX_THRESHOLD::Register>),
-        // (0x21 => _reserved8),
-        // (0x22 => _reserved9),
-        // (0x23 => _reserved10),
+
+        /// End marker
         (0x24 => @END),
     }
 }
+
 
 register_bitfields! {
     u32,
@@ -212,18 +243,24 @@ register_bitfields! {
 /// Abstraction for the associated MMIO registers.
 type Registers = MMIODerefWrapper<RegistersBlock>;
 
+/// Internal representation of a UART peripheral
 pub struct UartInner {
+    /// Memory-mapped registers for interacting with the UART hardware
     registers: Registers,
 }
 
 impl UartInner {
+    /// Creates a new instance of UartInner, unsafe due to direct hardware access
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
+                /// Initializes the registers with the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }
     }
+}
+
 
     // raw access ==================================================
 
