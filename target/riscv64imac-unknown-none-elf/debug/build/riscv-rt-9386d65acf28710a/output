@@ -1,0 +1,4 @@
+cargo:rerun-if-changed=bin/riscv64imc-unknown-none-elf.a
+cargo:rustc-link-lib=static=riscv-rt
+cargo:rustc-link-search=/home/yky2kor/SHAKTHI-RUSTBOOT/shakti_riscv_hal/shakti_riscv_hal/target/riscv64imac-unknown-none-elf/debug/build/riscv-rt-9386d65acf28710a/out
+cargo:rerun-if-changed=link.x

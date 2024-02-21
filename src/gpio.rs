@@ -1,4 +1,17 @@
+#![allow(dead_code)]
+#![allow(non_snake_case)]
+#![deny(unused_must_use)]
+#![deny(missing_docs)]
+
 //! General purpose input and output
+
+/// The General Purpose Input/output operation can be used to generate custom
+///waveforms, enable signals, generate interrupts, etc.
+///The GPIO has a GPIO DIRECTION register which configures the GPIO pin as an input or
+/// output and the GPIO DATA register which holds the input data to GPIO or output data from GPIO.
+///The GPIO pins 0 - 7 can accept External events as interrupts.
+///To use a GPIO pin (0 - 7) as interrupt, that particular GPIO pin(s) should be configured as input.
+/// The GPIO data register is 1 byte, 2 byte and 4 byte accessible.
 use crate::common::MMIODerefWrapper;
 use riscv::{
     asm::{delay, nop},
@@ -44,17 +57,9 @@ pub struct GPIOInner {
     registers: Registers,
 }
 
-
 ///Sequence of execution:
 ///1. Write into the GPIO Direction register to configure GPIO pin as an input or output.
 ///2. Write appropriate values to the GPIO DATA register.
-
-/// The General Purpose Input/output operation can be used to generate custom
-///waveforms, enable signals, generate interrupts, etc. The GPIO has a GPIO DIRECTION register
-///which configures the GPIO pin as an input or output and the GPIO DATA register which holds
-///the input data to GPIO or output data from GPIO. The GPIO pins 0 - 7 can accept External
-///events as interrupts. To use a GPIO pin (0 - 7) as interrupt, that particular GPIO pin(s) should be
-///configured as input. The GPIO data register is 1 byte, 2 byte and 4 byte accessible.
 
 impl GPIOInner {
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
@@ -64,11 +69,32 @@ impl GPIOInner {
             }
         }
     }
-    pub fn set_direction_control(&mut self,value: u32) {
+
+    /// Sets the direction control register value.
+
+    /// This function sets the value of the direction control register (DIRECTION_CR_REG) to the specified value.
+    ///
+    /// Method arguments:
+    /// - value : The value to be set in the direction control register.
+    ///
+    /// Returns:
+    /// - NONE
+
+    pub fn set_direction_control(&mut self, value: u32) {
         self.registers.DIRECTION_CR_REG.set(value);
     }
 
-    pub fn set_data_register(&mut self,value: u32) {
+    /// Sets the data register value.
+    ///
+    /// This function sets the value of the data register (DATA_REG) to the specified value.
+    ///
+    /// Method arguments:
+    /// - value: The value to be set in the data register.
+    ///
+    /// Returns:
+    /// - NONE
+
+    pub fn set_data_register(&mut self, value: u32) {
         self.registers.DATA_REG.set(value);
     }
 }
