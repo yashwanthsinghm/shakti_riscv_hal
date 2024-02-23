@@ -1,4 +1,9 @@
-//! Interrupt 
+#![allow(dead_code)]
+#![allow(non_snake_case)]
+#![deny(unused_must_use)]
+#![deny(missing_docs)]
+
+//! Interrupt
 use crate::common::MMIODerefWrapper;
 use riscv::{
     asm::{delay, nop},
@@ -27,15 +32,15 @@ register_structs! {
 
 register_bitfields! {
     u32,
-/*
-A memory mapped register of a real time counter.
-Address offset: 0xBFF8
-*/
+
+/// A memory mapped register of a real time counter.
+/// Address offset: 0xBFF8
+
     MTIME [
         MTIME_REG OFFSET(0) NUMBITS(32) []
     ],
 
- 
+
 /// Machine mode timer compare register which causes a timer interrupt to be posted when the
 ///mtime register contains a value greater than or equal to the value in the mtimecmp register
 ///Address offset: 0x4000
@@ -53,7 +58,6 @@ Address offset: 0xBFF8
     ],
 
 }
-
 
 type Registers = MMIODerefWrapper<RegistersBlock>;
 
