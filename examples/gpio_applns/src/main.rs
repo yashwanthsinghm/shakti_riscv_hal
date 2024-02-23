@@ -1,6 +1,3 @@
-#![no_std]
-#![no_main]
-#![feature(asm)]
 
 use riscv::{asm::delay, delay};
 // use cortex_m_rt::entry;
@@ -163,3 +160,12 @@ fn panic(_: &core::panic::PanicInfo) -> ! {
         unsafe { riscv::asm::nop() };
     }
 }
+
+
+
+
+
+
+
+
+

@@ -13,10 +13,12 @@
 ///To use a GPIO pin (0 - 7) as interrupt, that particular GPIO pin(s) should be configured as input.
 /// The GPIO data register is 1 byte, 2 byte and 4 byte accessible.
 use crate::common::MMIODerefWrapper;
+
 use riscv::{
     asm::{delay, nop},
     register,
 };
+
 use tock_registers::{
     interfaces::{Readable, Writeable},
     register_bitfields, register_structs,
