@@ -11,10 +11,6 @@
 ///Each UART module has transmit and receive buffers that can hold upto 16 entries.
 /// Data transfer rate can be modified by providing appropriate value to UARTBAUD register.
 use crate::common::MMIODerefWrapper;
-use riscv::{
-    asm::{delay, nop},
-    register,
-};
 use tock_registers::{
     interfaces::{Readable, Writeable},
     register_bitfields, register_structs,
@@ -254,7 +250,7 @@ impl UartInner {
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
-                /// Initializes the registers with the provided memory-mapped address
+                // Initializes the registers with the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }
@@ -276,26 +272,15 @@ impl UartInner {
     /// - NONE
 
     pub fn write_uart_char(&mut self, c: char) {
-        unsafe {
-            //let status = (*self.registers).USR.get().eq(&0x00);
-            //let status = ;
-
+           
             while match (*self.registers).USR.get() & STS_TX_FULL_FLAG {
                 0x02 => true,
                 _ => false,
             } {
-                //(*self.registers).TX_REG.s
-                //     self.registers.TX_REG.set(TX_REG::TX_DATA::CLEAR.into());
-                // TX_REG::TX_DATA::CLEAR;
-                //let value = (*self.registers).USR.get();
-                // delay(10);
-                // nop();
             }
             self.registers.TX_REG.set(c as u32);
-            // let value  = self.registers.USR.read(USR::STS_RX_FULL);
-
-            //self.print_register_value();
-        }
+           
+        
     }
 
     /// Writes a string of characters to the UART.
@@ -325,20 +310,16 @@ impl UartInner {
     /// Returns:
     /// - value : The value of the UART status register as a u8.
 
-    pub fn print_register_value(&mut self) -> u8 {
-        unsafe {
+    pub fn print_uart_status(&mut self) -> u8 {
             let value = (*self.registers).USR.get();
-            //  baud_value
-            // let val = self.registers.USR.get();
             self.registers.TX_REG.set(value.into());
             value
-        }
+        
     }
 
     /// Reads a character from the UART receiver buffer.
     ///
     /// Waits until a character is available in the receiver buffer and then reads it.
-    /// Once a character is read, it's transmitted through the UART transmitter buffer.
     ///
     /// Method arguments:
     /// - NONE
@@ -352,10 +333,10 @@ impl UartInner {
             _ => true,
         } {}
 
-        while match (*self.registers).USR.get() & STS_TX_FULL_FLAG {
-            0x02 => true,
-            _ => false,
-        } {}
+        // while match (*self.registers).USR.get() & STS_TX_FULL_FLAG {
+        //     0x02 => true,
+        //     _ => false,
+        // } {}
         self.registers.TX_REG.set(self.registers.RCV_REG.get())
     }
 

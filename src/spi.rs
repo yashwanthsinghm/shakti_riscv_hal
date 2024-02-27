@@ -8,15 +8,14 @@
 /// shifted into and out of the device at programmable bit transfer rate
 use riscv::asm::delay;
 use tock_registers::{
-    fields::FieldValue,
     interfaces::{ReadWriteable, Readable, Writeable},
     register_bitfields, register_structs,
-    registers::{ReadOnly, ReadWrite, WriteOnly},
+    registers::{ReadOnly, ReadWrite},
 };
 
 use crate::common::MMIODerefWrapper;
 
-use self::SPI_CR1::SPI_TOTAL_BITS_TX;
+//use self::SPI_CR1::SPI_TOTAL_BITS_TX;
 
 /// Base address of the SPI peripheral register block
 pub const SPI_OFFSET: usize = 0x0002_0000;
@@ -452,26 +451,26 @@ impl SPIInner {
     /// Returns:
     /// - dr5: Device ID
 
-    pub fn flash_device_id(&mut self) -> u32 {
-        let mut dr5 = 0;
-        self.flash_write_enable();
-        self.registers.SPI_DR1.modify(SPI_DR1::DR1.val(0x9F000000));
-        self.registers.SPI_DR5.modify(SPI_DR5::DR5.val(0x9F000000));
-        self.spi_tx_rx_start();
-        self.registers.SPI_CR1.modify(
-            SPI_CR1::SPI_BR.val(7)
-                + SPI_CR1::SPI_TOTAL_BITS_TX.val(8)
-                + SPI_CR1::SPI_TOTAL_BITS_RX.val(24)
-                + SPI_CR1::SPI_SPE::ENABLED
-                + SPI_CR1::SPI_CPHA::SECOND_CLK
-                + SPI_CR1::SPI_CPOL::ONE_IDLE,
-        );
-        if self.spi_rxne_enable() {
-            dr5 = self.registers.SPI_DR5.get();
-        }
-        dr5
-        // need to implement further
-    }
+    // pub fn flash_device_id(&mut self) -> u32 {
+    //     let mut dr5 = 0;
+    //     self.flash_write_enable();
+    //     self.registers.SPI_DR1.modify(SPI_DR1::DR1.val(0x9F000000));
+    //     self.registers.SPI_DR5.modify(SPI_DR5::DR5.val(0x9F000000));
+    //     self.spi_tx_rx_start();
+    //     self.registers.SPI_CR1.modify(
+    //         SPI_CR1::SPI_BR.val(7)
+    //             + SPI_CR1::SPI_TOTAL_BITS_TX.val(8)
+    //             + SPI_CR1::SPI_TOTAL_BITS_RX.val(24)
+    //             + SPI_CR1::SPI_SPE::ENABLED
+    //             + SPI_CR1::SPI_CPHA::SECOND_CLK
+    //             + SPI_CR1::SPI_CPOL::ONE_IDLE,
+    //     );
+    //     if self.spi_rxne_enable() {
+    //         dr5 = self.registers.SPI_DR5.get();
+    //     }
+    //     dr5
+    //     // need to implement further
+    // }
 
     /// Function to reset the status register.
     ///
@@ -542,17 +541,10 @@ impl SPIInner {
                 + SPI_CR1::SPI_TOTAL_BITS_RX.val(0)
                 + SPI_CR1::SPI_TOTAL_BITS_TX.val(40),
         );
-
-        //waitfor(20);
         unsafe {
             delay(1000);
         }
         self.spi_not_busy();
-        // while self
-        //     .registers
-        //     .SPI_SR
-        //     .any_matching_bits_set(SPI_SR::SPI_BSY::SET)
-        // {}
         1
     }
 
@@ -574,8 +566,6 @@ impl SPIInner {
         let data1 = ((addr & 0xFF) << 24) | ((data & 0xFFFFFF00) >> 8);
         let data2 = ((data & 0xFF) << 24) & 0xFF000000;
 
-        //log_debug("\n cmd: %x;d1: %x; d2: %x", cmd_addr, data1, data2);
-
         self.registers.SPI_DR1.set(cmd_addr);
         self.registers.SPI_DR2.set(data1);
         self.registers.SPI_DR3.set(data2);
@@ -590,12 +580,8 @@ impl SPIInner {
         );
         unsafe { delay(1000) };
         self.spi_not_busy();
-        //waitfor(20);
-        // while self
-        //     .registers
-        //     .SPI_SR
-        //     .any_matching_bits_set(SPI_SR::SPI_BSY::SET)
-        // {}
+       
+       
 
         self.flash_status_register_read();
     }
@@ -616,7 +602,7 @@ impl SPIInner {
     pub fn flash_write(&mut self, address: u32, data: u32) {
         SPIInner::flash_write_enable(self);
         SPIInner::flash_cmd_addr_data(self, 0x12000000, address, data);
-        // flash_status_register_read();
+       
     }
 
     /// Function to send a 8 bit command for reading data from flash.
