@@ -336,7 +336,7 @@ impl SPIInner {
     pub const unsafe fn new(mmio_start_addr: usize) -> Self {
         unsafe {
             Self {
-                /// Initializes the registers with the provided memory-mapped address
+                // Initializes the registers with the provided memory-mapped address
                 registers: Registers::new(mmio_start_addr),
             }
         }
