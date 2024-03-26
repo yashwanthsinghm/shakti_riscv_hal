@@ -1,4 +1,5 @@
-
+#![no_std]
+#![no_main]
 use riscv::{asm::delay, delay};
 // use cortex_m_rt::entry;
 use riscv_rt::entry;
