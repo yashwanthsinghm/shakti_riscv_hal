@@ -8,5 +8,13 @@ edition = "2021"
 [dependencies]
 shakti_riscv_hal = {path="../../"}
 #panic-halt = "0.2.0"
-riscv-rt = "0.13.0"
+#riscv-rt = "0.13.0"
+riscv-rt = { git  = "https://github.com/rust-embedded/riscv", branch ="master"}
 riscv = "0.12.1"
+
+[profile.dev]
+opt-level = 3
+debug = true
+lto = "off"
+incremental = true 
+code-gen-units = 16
